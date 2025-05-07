@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import ContributionGraph from '@/components/ContributionGraph';
 import styles from './page.module.css';
 
-export default function Home() {
+function HomeContent() {
     const searchParams = useSearchParams();
     const [username, setUsername] = useState<string>('');
     const [from, setFrom] = useState<string>('');
@@ -28,7 +28,7 @@ export default function Home() {
     }, [searchParams]);
 
     return (
-        <main className={styles.main}>
+        <>
             {username && (
                 <ContributionGraph
                     username={username}
@@ -36,6 +36,16 @@ export default function Home() {
                     to={to}
                 />
             )}
+        </>
+    );
+}
+
+export default function Home() {
+    return (
+        <main className={styles.main}>
+            <Suspense fallback={<div>加载中...</div>}>
+                <HomeContent />
+            </Suspense>
         </main>
     );
 } 
